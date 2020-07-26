@@ -1,0 +1,254 @@
+create table Customer (cust_name varchar(15), cust_street varchar(15) , cust_city varchar(15));
+
+create table Branch (branch_name varchar(20) , branch_city varchar(15) , assets int);
+
+create table Account (acc_no int not NULL primary key , branch_name varchar(20) , balance int);
+
+create table Depositer (cust_name varchar(15) , acc_no int , foreign key(acc_no) references Account(acc_no) on delete cascade on update cascade);
+
+create table Loan (loan_no varchar(10) primary key , branch_name varchar(20) , amount int);
+
+create table Borrower (cust_name varchar(15) , loan_no varchar(10) , foreign key(loan_no) references
+Loan(loan_no) on delete cascade,on update cascade);
+
+-------------------------------------------------------------------------------------------------------
+
+Q1. Find the names of all branches in loan relation.
+
+mysql> select branch_name from Loan;
++-------------+
+| branch_name |
++-------------+
+| Camp        |
+| Dadar       |
+| Kothrud     |
+| JM Road     |
+| Camp        |
+| Wagholi     |
++-------------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q2.Find all loan numbers for loans made at Camp Branch with loan amount > 1200.
+
+mysql> select loan_no from Loan where branch_name="Camp" and amount > 1200;
++---------+
+| loan_no |
++---------+
+|      12 |
+|      99 |
++---------+
+
+---------------------------------------------------------------------------------------------------------
+
+Q3.Find all customers who have a loan from bank.
+
+mysql> select B.cust_name from Borrower B,Loan L where B.loan_no=L.loan_no;
++-----------+
+| cust_name |
++-----------+
+| Ram       |
+| Rahul     |
+| Aniketh   |
+| Reeta     |
+| Sham      |
++-----------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q4.Find their names,loan_no and loan amount.
+
+mysql> select B.cust_name,B.loan_no,L.amount from Borrower B, Loan L where B.loan_no=L.loan_no;
++-----------+---------+--------+
+| cust_name | loan_no | amount |
++-----------+---------+--------+
+| Ram       |      12 |   5000 |
+| Rahul     |      34 |   7000 |
+| Aniketh   |      99 |   1700 |
+| Reeta     |      66 |   3000 |
+| Sham      |      77 |   2000 |
++-----------+---------+--------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q4. List all customers in alphabetical order who have loan from Camp branch.
+
+mysql> select cust_name from Borrower where loan_no in(select loan_no from Loan where  
+branch_name="Camp") order by cust_name;
++-----------+
+| cust_name |
++-----------+
+| Aniketh   |
+| Ram       |
++-----------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q5. Find all customers who have an account or loan or both at bank.
+
+mysql> select cust_name from Depositor union select cust_name from Borrower;
++-----------+
+| cust_name |
++-----------+
+| Ram       |
+| Rahul     |
+| Reeta     |
+| Geet      |
+| Aniketh   |
+| Sham      |
++-----------+
+
+
+--------------------------------------------------------------------------------------------------------
+
+Q6. Find all customers who have both account and loan at bank.
+
+mysql> select D.cust_name from Depositor D inner join Borrower B on D.cust_name=B.cust_name;
++-----------+
+| cust_name |
++-----------+
+| Ram       |
+| Rahul     |
+| Reeta     |
++-----------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q7. Find all customer who have account but no loan at the bank.
+
+mysql> select D.cust_name from Depositor D where cust_name not in (select cust_name from Borrower);
++-----------+
+| cust_name |
++-----------+
+| Geet      |
++-----------+
+
+
+--------------------------------------------------------------------------------------------------------
+
+Q8. Find average account balance at Camp branch.
+
+mysql> select avg(balance) from Account where branch_name="Camp";
++--------------+
+| avg(balance) |
++--------------+
+|   20000.0000 |
++--------------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q9. Find the average account balance at each branch
+mysql> select branch_name, avg(balance) from Account group by branch_name;
++-------------+--------------+
+| branch_name | avg(balance) |
++-------------+--------------+
+| Camp        |   20000.0000 |
+| Dadar       |   30000.0000 |
+| JM Road     |  110000.0000 |
+| Kothrud     |    5000.0000 |
++-------------+--------------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q10. Find no. of depositors at each branch.
+mysql> select branch_name,count(D.acc_no) from Account A,Depositor D where A.acc_no = D.acc_no group by branch_name;
++-------------+-----------------+
+| branch_name | count(D.acc_no) |
++-------------+-----------------+
+| Camp        |               1 |
+| Dadar       |               1 |
+| JM Road     |               1 |
+| Kothrud     |               1 |
++-------------+-----------------+
+
+
+-------------------------------------------------------------------------------------------------------
+
+Q11. Find the branches where average account balance > 12000
+mysql> select branch_name,avg(balance) Average_Balance from Account where balance > 12000 group by branch_name;
++-------------+-----------------+
+| branch_name | Average_Balance |
++-------------+-----------------+
+| Camp        |      20000.0000 |
+| Dadar       |      30000.0000 |
+| JM Road     |     110000.0000 |
++-------------+-----------------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q12. Find number of tuples in customer relation.
+
+mysql> select count(cust_city) No_Of_Tuples from Customer;
++--------------+
+| No_Of_Tuples |
++--------------+
+|            6 |
++--------------+
+
+
+--------------------------------------------------------------------------------------------------------
+
+Q13. Calculate total loan amount given by bank.
+
+mysql> select sum(amount) Total_Loan from Loan;
++------------+
+| Total_Loan |
++------------+
+|     118700 |
++------------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q14. Delete all loans with loan amount between 1300 and 1500.
+
+mysql> delete from Loan where amount between 1300 and 1500;
+mysql> select * from Loan;
++---------+-------------+--------+
+| loan_no | branch_name | amount |
++---------+-------------+--------+
+|      12 | Camp        |   5000 |
+|      34 | Dadar       |   7000 |
+|      66 | Kothrud     |   3000 |
+|      77 | JM Road     |   2000 |
+|      99 | Camp        |   1700 |
+|     756 | Wagholi     | 100000 |
++---------+-------------+--------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q15. Delete all tuples at every branch located in Nigdi.
+
+mysql>  delete A,L from Account A inner join Loan L on A.branch_name=L.branch_name where A.branch_name = "JM Road";
+mysql> select * from Account;
++--------+-------------+---------+
+| Acc_no | branch_name | balance |
++--------+-------------+---------+
+|    100 | Kothrud     |    5000 |
+|    111 | Dadar       |   30000 |
+|    123 | Camp        |   20000 |
++--------+-------------+---------+
+
+mysql> select * from Loan;
++---------+-------------+--------+
+| loan_no | branch_name | amount |
++---------+-------------+--------+
+|      12 | Camp        |   5000 |
+|      34 | Dadar       |   7000 |
+|      66 | Kothrud     |   3000 |
+|      99 | Camp        |   1700 |
+|     756 | Wagholi     | 100000 |
++---------+-------------+--------+
+
+--------------------------------------------------------------------------------------------------------
+
+Q.16. Rename Account table.
+mysql> rename table Account to Account1;
+
+--------------------------------------------------------------------------------------------------------
+Q.17. Create sequence roll_seq and use in student table for roll_no column.
+
+
+
+
+
+

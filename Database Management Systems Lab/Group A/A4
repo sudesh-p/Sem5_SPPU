@@ -1,0 +1,132 @@
+1.Create following Tables
+cust_mstr(cust_no,fname,lname)
+add_dets(code_no,add1,add2,state,city,pincode)
+Retrieve the address of customer Fname as 'xyz' and Lname as 'pqr'
+
+mysql> select add1,add2,state,city,pincode from add_dets where code_no in(select cust_no from cust_mstr where fname="Aniketh" and lname="Poojary");
++------+----------+-------------+------+---------+
+| add1 | add2     | state       | city | pincode |
++------+----------+-------------+------+---------+
+| Pune | Banglore | Maharashtra | Pune |  411060 |
++------+----------+-------------+------+---------+
+
+-------------------------------------------------------------------------------------------------------
+2.Create following Tables
+cust_mstr(custno,fname,lname)
+acc_fd_cust_dets(code_no,acc_fd_no)
+fd_dets(fd_sr_no,amt)
+List the customer holding fixed deposit of amount more than 5000
+
+mysql> select fname,lname from cust_mstr where cust_no in (select code_no from acc_fd_cust_dets where acc_fd_no in (select fd_sr_no from fd_dets where amt>5000));
++---------+---------+
+| fname   | lname   |
++---------+---------+
+| Aniketh | Poojary |
++---------+---------+
+
+-------------------------------------------------------------------------------------------------------
+
+3. Create following Tables
+emp_mstr(e_mpno,f_name,l_name,m_name,dept,desg,branch_no)
+branch_mstr(name,b_no)
+List the employee details along with branch names to which they belong
+
+mysql> select E.emp_no,E.fname,E.lname,E.mname,E.dept,E.desg,B.name from emp_mstr E,branch_mstr B where E.branch_no in(select branch_no from branch_mstr);
++--------+--------+-------+--------+------+-----------+-------------+
+| emp_no | fname  | lname | mname  | dept | desg      | name        |
++--------+--------+-------+--------+------+-----------+-------------+
+|     11 | Nisarg | Patel | Deepak | COMP | Professor | Data Mining |
++--------+--------+-------+--------+------+-----------+-------------+
+
+-------------------------------------------------------------------------------------------------------
+
+4. Create following Tables
+emp_mstr(emp_no,f_name,l_name,m_name,dept)
+cntc_dets(code_no,cntc_type,cntc_data)
+List the employee details along with contact details using left outer join & right join
+
+//Left outer join:
+mysql> select emp_no,fname,lname,mname,dept,cntc_type,cntc_data from emp_mstr left outer join cntc_dets on emp_mstr.emp_no=cntc_dets.code_no;
++--------+--------+------------+-------------+-------+-----------+------------+
+| emp_no | fname  | lname      | mname       | dept  | cntc_type | cntc_data  |
++--------+--------+------------+-------------+-------+-----------+------------+
+|     11 | Nisarg | Patel      | Deepak      | COMP  | Mobile    | 9527835047 |
+|     22 | Meher  | Patil      | Deepak      | MECH  | Landline  | 9523335047 |
+|     33 | Aditya | Naiknaware | Chandrakant | ENTC  | Mobile    | 9526635047 |
+|     44 | Amogh  | Lad        | Abc         | CIVIL | Landline  | 9886635047 |
++--------+--------+------------+-------------+-------+-----------+------------+
+
+
+//Right join:
+mysql> select emp_no,fname,lname,mname,dept,cntc_type,cntc_data from emp_mstr right join cntc_dets on emp_mstr.emp_no=cntc_dets.code_no;
++--------+--------+------------+-------------+-------+-----------+------------+
+| emp_no | fname  | lname      | mname       | dept  | cntc_type | cntc_data  |
++--------+--------+------------+-------------+-------+-----------+------------+
+|     11 | Nisarg | Patel      | Deepak      | COMP  | Mobile    | 9527835047 |
+|     22 | Meher  | Patil      | Deepak      | MECH  | Landline  | 9523335047 |
+|     33 | Aditya | Naiknaware | Chandrakant | ENTC  | Mobile    | 9526635047 |
+|     44 | Amogh  | Lad        | Abc         | CIVIL | Landline  | 9886635047 |
++--------+--------+------------+-------------+-------+-----------+------------+
+
+-------------------------------------------------------------------------------------------------------
+
+5. Create following Tables
+cust_mstr(cust_no,fname,lname)
+add_dets(code_no,pincode)
+List the customer who do not have bank branches in their vicinity.
+
+-------------------------------------------------------------------------------------------------------
+
+6.Create View on borrower table by selecting any two columns and perform insert update
+delete`operations.
+mysql> create view BorrowerView as select * from Borrower;
+mysql> select * from BorrowerView;
++-----------+---------+
+| cust_name | loan_no |
++-----------+---------+
+| Ram       |      12 |
+| Rahul     |      34 |
+| Aniketh   |      99 |
+| Reeta     |      66 |
+| Sham      |      77 |
++-----------+---------+
+
+mysql> insert into BorrowerView values("Satyapriya",756);
+mysql> select * from BorrowerView;
++------------+---------+
+| cust_name  | loan_no |
++------------+---------+
+| Ram        |      12 |
+| Rahul      |      34 |
+| Aniketh    |      99 |
+| Reeta      |      66 |
+| Sham       |      77 |
+| Satyapriya |     756 |
++------------+---------+
+
+mysql> update BorrowerView set cust_name="Harish" where loan_no=756;
+mysql> select * from BorrowerView;
++-----------+---------+
+| cust_name | loan_no |
++-----------+---------+
+| Ram       |      12 |
+| Rahul     |      34 |
+| Aniketh   |      99 |
+| Reeta     |      66 |
+| Sham      |      77 |
+| Harish    |     756 |
++-----------+---------+
+
+mysql> delete from BorrowerView where loan_no=756;
+mysql> select * from BorrowerView;
++-----------+---------+
+| cust_name | loan_no |
++-----------+---------+
+| Ram       |      12 |
+| Rahul     |      34 |
+| Aniketh   |      99 |
+| Reeta     |      66 |
+| Sham      |      77 |
++-----------+---------+
+
+-------------------------------------------------------------------------------------------------------

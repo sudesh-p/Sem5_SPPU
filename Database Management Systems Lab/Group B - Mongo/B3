@@ -1,0 +1,343 @@
+A. Use Employee database created in Assignment 01 and perform following aggregation
+operation
+
+1. Return Designation with Total Salary is Above 200000
+
+db.Employee.aggregate([{$group:{_id:"$Designation",total:{$sum:"$Salary"}}},{$match:{total:{$gt:200000}}}])
+{
+	"result" : [
+		{
+			"_id" : "Designer",
+			"total" : 425000
+		}
+	],
+	"ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+2. Find Employee with Total Salary for Each City with Designation="DBA"
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+3. Find Total Salary of Employee with Designation="DBA" for Each Company
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+4. Returns names and _id in upper case and in alphabetical order.
+
+
+-------------------------------------------------------------------------------------------------------
+
+5. Count all records from collection
+
+db.Employee.find().count()
+10
+
+
+-------------------------------------------------------------------------------------------------------
+6. For each unique Designation, find avg Salary and output is sorted by AvgSal
+
+db.Employee.aggregate([{$group:{_id:"$Designation",AvgAmount:{$avg:"$Salary"}}},{$sort:{AvgAmount:1}}])
+{
+	"result" : [
+		{
+			"_id" : "Programmer",
+			"AvgAmount" : 32000
+		},
+		{
+			"_id" : "Designer",
+			"AvgAmount" : 41666.666666666664
+		},
+		{
+			"_id" : "Tester",
+			"AvgAmount" : 47500
+		},
+		{
+			"_id" : "AI",
+			"AvgAmount" : 50000
+		}
+	],
+	"ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+7. Return separates value in the Expertise array where Name of Employee="Satyapriya"
+
+db.Employee.find({"Name.Fname":"Satyapriya"},{Expertise:1,_id:0})
+{ "Expertise" : [ "Mysql", "Cassandra" ] }
+{ "Expertise" : [ "Mongodb", "Mysql", "Cassandra" ] }
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+8. Return separates value in the Expertise array and return sum of each element of array
+ db.Employee.aggregate([{$match:{Expertise:{$not:{$size:0}}}},{$unwind:"$Expertise"},{$group:{_id:"$Expertise",count:{$sum:1}}}])
+{
+	"result" : [
+		{
+			"_id" : "C#",
+			"count" : 1
+		},
+		{
+			"_id" : "R",
+			"count" : 1
+		},
+		{
+			"_id" : "JAVASCRIPT",
+			"count" : 3
+		},
+		{
+			"_id" : "C++",
+			"count" : 2
+		},
+		{
+			"_id" : "HTML",
+			"count" : 1
+		},
+		{
+			"_id" : "JAVA",
+			"count" : 5
+		},
+		{
+			"_id" : "SDLC",
+			"count" : 1
+		},
+		{
+			"_id" : "CSS",
+			"count" : 2
+		},
+		{
+			"_id" : "Cassandra",
+			"count" : 1
+		},
+		{
+			"_id" : "PYTHON",
+			"count" : 3
+		},
+		{
+			"_id" : "MySQL",
+			"count" : 1
+		},
+		{
+			"_id" : "MongoDB",
+			"count" : 1
+		}
+	],
+	"ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+9. Return Array for Designation whose address is "Pune"
+
+ db.Employee.distinct("Designation",{"Address.City":"PUNE"})
+[ "Programmer" ]
+
+-------------------------------------------------------------------------------------------------------
+10. Return Max and Min Salary for each company.
+
+db.Employee.aggregate([{$group:{_id:"$Company Name",minSalary:{$min:"$Salary"}}}])
+{
+	"result" : [
+		{
+			"_id" : "Capgemini",
+			"minSalary" : 50000
+		},
+		{
+			"_id" : "IBM",
+			"minSalary" : 24000
+		},
+		{
+			"_id" : "Fiserv",
+			"minSalary" : 55000
+		},
+		{
+			"_id" : "Google",
+			"minSalary" : 50000
+		},
+		{
+			"_id" : "Mphasis",
+			"minSalary" : 35000
+		},
+		{
+			"_id" : "GS LAB",
+			"minSalary" : 30000
+		},
+		{
+			"_id" : "Cognizant",
+			"minSalary" : 45000
+		},
+		{
+			"_id" : "TCS",
+			"minSalary" : 37000
+		}
+	],
+	"ok" : 1
+}
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+B. Use Employee database created in Assignment 01 and perform following indexing
+operation
+
+1.To Create Single Field Indexes on Designation
+db.Employee.createIndex({Designation:1})
+{
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+2.To Create Compound Indexes on Name: 1, Age: -1
+
+db.Employee.createIndex({Name:1,Age:-1})
+{
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 2,
+        "numIndexesAfter" : 3,
+        "ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+3.To Create Multikey Indexes on Expertise array
+
+> db.Employee.createIndex({Expertise:1})
+{
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 3,
+        "numIndexesAfter" : 4,
+        "ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+4.Return a List of All Indexes on Collection
+
+ db.Employee.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_",
+                "ns" : "emp.Employee"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Designation" : 1
+                },
+                "name" : "Designation_1",
+                "ns" : "emp.Employee"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Name" : 1,
+                        "Age" : -1
+                },
+                "name" : "Name_1_Age_-1",
+                "ns" : "emp.Employee"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Expertise" : 1
+                },
+                "name" : "Expertise_1",
+                "ns" : "emp.Employee"
+        }
+]
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+5.Rebuild Indexes
+
+db.Employee.reIndex()
+{
+        "nIndexesWas" : 4,
+        "nIndexes" : 4,
+        "indexes" : [
+                {
+                        "v" : 2,
+                        "key" : {
+                                "_id" : 1
+                        },
+                        "name" : "_id_",
+                        "ns" : "emp.Employee"
+                },
+                {
+                        "v" : 2,
+                        "key" : {
+                                "Designation" : 1
+                        },
+                        "name" : "Designation_1",
+                        "ns" : "emp.Employee"
+                },
+                {
+                        "v" : 2,
+                        "key" : {
+                                "Name" : 1,
+                                "Age" : -1
+                        },
+                        "name" : "Name_1_Age_-1",
+                        "ns" : "emp.Employee"
+                },
+                {
+                        "v" : 2,
+                        "key" : {
+                                "Expertise" : 1
+                        },
+                        "name" : "Expertise_1",
+                        "ns" : "emp.Employee"
+                }
+        ],
+        "ok" : 1
+}
+
+-------------------------------------------------------------------------------------------------------
+
+6. Drop Index on Remove Specific Index
+
+db.Employee.dropIndex({Salary:1})
+{ "nIndexesWas" : 5, "ok" : 1 }
+
+-------------------------------------------------------------------------------------------------------
+
+7. Remove All Indexes except for the _id index from a collection
+
+db.Employee.dropIndexes()
+{
+        "nIndexesWas" : 4,
+        "msg" : "non-_id indexes dropped for collection",
+        "ok" : 1
+}
+> db.Employee.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_",
+                "ns" : "emp.Employee"
+        }
+]

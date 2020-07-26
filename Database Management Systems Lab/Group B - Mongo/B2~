@@ -1,0 +1,456 @@
+1)Select all documents where the Designation field has the value "Programmer" and the value of the salary field is greater than 30000.
+
+> db.Employee.find({$and:[{Designation:"Programmer"},{Salary:{$gt:30000}}]}).pretty()
+{
+	"_id" : ObjectId("5bac671f138aa944ccf0167a"),
+	"Empid" : 1,
+	"Name" : {
+		"Fname" : "Vikas",
+		"Lname" : "Raut"
+	},
+	"Company Name" : "TCS",
+	"Salary" : 37000,
+	"Designation" : "Programmer",
+	"Age" : 26,
+	"Expertise" : [
+		"MongoDB",
+		"MySQL",
+		"Cassandra"
+	],
+	"DOB" : "13/01/1998",
+	"Email Id" : "abc@gmail.com",
+	"Contact" : "9527152668",
+	"Address" : [
+		{
+			"City" : "PUNE",
+			"Pincode" : "411060"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ff9138aa944ccf0167f"),
+	"Empid" : 6,
+	"Name" : {
+		"Fname" : "Nisarg",
+		"Lname" : "Patel"
+	},
+	"Company Name" : "Mphasis",
+	"Salary" : 35000,
+	"Designation" : "Programmer",
+	"Age" : 38,
+	"Expertise" : [
+		"PYTHON",
+		"JAVA"
+	],
+	"DOB" : "17/06/1980",
+	"Email Id" : "poi@gmail.com",
+	"Contact" : "9523002255",
+	"Address" : [
+		{
+			"City" : "PIMPRI",
+			"Pincode" : "411040"
+		}
+	]
+}
+
+-------------------------------------------------------------------------------------------------------
+
+2)Creates a new document if no document in the employee collection contains:
+	{Designation: "Tester", Company_name: "TCS", Age: 25}
+
+> db.Employee.update({Designation:"Tester","Company Name":"TCS",Age:25},{Designation:"Tester","Company Name":"TCS",Salary:50000,Age:25,Expertise:["JAVA","C#"]},{upsert:true})
+{
+	"_id" : ObjectId("5bbcc87540bc62b95f3c15ea"),
+	"Designation" : "Tester",
+	"Company Name" : "TCS",
+	"Salary" : 50000,
+	"Age" : 25,
+	"Expertise" : [
+		"JAVA",
+		"C#"
+	]
+}
+
+-------------------------------------------------------------------------------------------------------
+
+3)Selects all documents in the collection where the field age has a value less than 30 or the value of the salary field is greater than 40000.
+
+> db.Employee.find({$or:[{Age:{$lt:30}},{Salary:{$gt:40000}}]}).pretty()
+{
+	"_id" : ObjectId("5bac671f138aa944ccf0167a"),
+	"Empid" : 1,
+	"Name" : {
+		"Fname" : "Vikas",
+		"Lname" : "Raut"
+	},
+	"Company Name" : "TCS",
+	"Salary" : 37000,
+	"Designation" : "Programmer",
+	"Age" : 26,
+	"Expertise" : [
+		"MongoDB",
+		"MySQL",
+		"Cassandra"
+	],
+	"DOB" : "13/01/1998",
+	"Email Id" : "abc@gmail.com",
+	"Contact" : "9527152668",
+	"Address" : [
+		{
+			"City" : "PUNE",
+			"Pincode" : "411060"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ce4138aa944ccf0167c"),
+	"Empid" : 3,
+	"Name" : {
+		"Fname" : "Aniketh",
+		"Lname" : "Poojary"
+	},
+	"Company Name" : "Cognizant",
+	"Salary" : 45000,
+	"Designation" : "Tester",
+	"Age" : 35,
+	"Expertise" : [
+		"SDLC",
+		"JAVA",
+		"C++"
+	],
+	"DOB" : "17/06/1988",
+	"Email Id" : "pqr@gmail.com",
+	"Contact" : "9523452668",
+	"Address" : [
+		{
+			"City" : "NASHIK",
+			"Pincode" : "411028"
+		}
+	]
+}
+
+-------------------------------------------------------------------------------------------------------
+
+4)Matches all documents where the value of the field Address is an embedded document
+that contains only the field city with the value "Pune" and the field Pin_code with the
+value "411001".
+
+> db.Employee.aggregate([{$match:{$and:[{"Address.City":"PUNE"},{"Address.Pincode":"411001"}]}}])
+{
+	"result" : [
+		{
+			"_id" : ObjectId("5bac671f138aa944ccf0167a"),
+			"Empid" : 1,
+			"Name" : {
+				"Fname" : "Vikas",
+				"Lname" : "Raut"
+			},
+			"Company Name" : "TCS",
+			"Salary" : 37000,
+			"Designation" : "Programmer",
+			"Age" : 26,
+			"Expertise" : [
+				"MongoDB",
+				"MySQL",
+				"Cassandra"
+			],
+			"DOB" : "13/01/1998",
+			"Email Id" : "abc@gmail.com",
+			"Contact" : "9527152668",
+			"Address" : [
+				{
+					"City" : "PUNE",
+					"Pincode" : "411001"
+				}
+			]
+		}
+	],
+	"ok" : 1
+}
+
+
+-------------------------------------------------------------------------------------------------------
+
+5)Finds all documents with Company_name: "TCS" and modifies their salary field by 2000.
+
+> db.Employee.update({"Company Name":"TCS"},{$inc:{Salary:2000}})
+
+-------------------------------------------------------------------------------------------------------
+
+6)Find documents where Designation is not equal to "Developer".
+
+> db.Employee.find({Designation:{$ne:"Developer"}}).pretty()
+{
+	"_id" : ObjectId("5bac671f138aa944ccf0167a"),
+	"Empid" : 1,
+	"Name" : {
+		"Fname" : "Satyapriya",
+		"Lname" : "Raut"
+	},
+	"Company Name" : "TCS",
+	"Salary" : 37000,
+	"Designation" : "Programmer",
+	"Age" : 26,
+	"Expertise" : [
+		"MongoDB",
+		"MySQL",
+		"Cassandra"
+	],
+	"DOB" : "13/01/1998",
+	"Email Id" : "abc@gmail.com",
+	"Contact" : "9527152668",
+	"Address" : [
+		{
+			"City" : "PUNE",
+			"Pincode" : "411060"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ce4138aa944ccf0167c"),
+	"Empid" : 3,
+	"Name" : {
+		"Fname" : "Aniketh",
+		"Lname" : "Poojary"
+	},
+	"Company Name" : "Cognizant",
+	"Salary" : 45000,
+	"Designation" : "Tester",
+	"Age" : 30,
+	"Expertise" : [
+		"SDLC",
+		"JAVA",
+		"C++"
+	],
+	"DOB" : "17/06/1988",
+	"Email Id" : "pqr@gmail.com",
+	"Contact" : "9523452668",
+	"Address" : [
+		{
+			"City" : "NASHIK",
+			"Pincode" : "411028"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ef6138aa944ccf0167d"),
+	"Empid" : 4,
+	"Name" : {
+		"Fname" : "Aditya",
+		"Lname" : "Naiknaware"
+	},
+	"Company Name" : "GS LAB",
+	"Salary" : 40000,
+	"Designation" : "Designer",
+	"Age" : 27,
+	"Expertise" : [
+		"HTML",
+		"CSS",
+		"JAVASCRIPT"
+	],
+	"DOB" : "17/06/1993",
+	"Email Id" : "xyz@gmail.com",
+	"Contact" : "9523452222",
+	"Address" : [
+		{
+			"City" : "MUMBAI",
+			"Pincode" : "411001"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6f64138aa944ccf0167e"),
+	"Empid" : 5,
+	"Name" : {
+		"Fname" : "Rishi",
+		"Lname" : "Mane"
+	},
+	"Company Name" : "GS LAB",
+	"Salary" : 30000,
+	"Designation" : "Designer",
+	"Age" : 28,
+	"Expertise" : [
+		"CSS",
+		"JAVASCRIPT"
+	],
+	"DOB" : "17/06/1990",
+	"Email Id" : "qwe@gmail.com",
+	"Contact" : "9523452255",
+	"Address" : [
+		{
+			"City" : "KOTHRUD",
+			"Pincode" : "411110"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ff9138aa944ccf0167f"),
+	"Empid" : 6,
+	"Name" : {
+		"Fname" : "Nisarg",
+		"Lname" : "Patel"
+	},
+	"Company Name" : "Mphasis",
+	"Salary" : 35000,
+	"Designation" : "Programmer",
+	"Age" : 38,
+	"Expertise" : [
+		"PYTHON",
+		"JAVA"
+	],
+	"DOB" : "17/06/1980",
+	"Email Id" : "poi@gmail.com",
+	"Contact" : "9523002255",
+	"Address" : [
+		{
+			"City" : "PIMPRI",
+			"Pincode" : "411040"
+		}
+	]
+}
+
+--------------------------------------------------------------------------------------------------------
+
+7)Find _id, Designation, Address and Name from all documents where Company_name is "Infosys".
+
+> db.Employee.find({"Company Name":"Infosys"},{_id:1,Designation:1,Address:1,Name:1}).pretty()
+{
+	"_id" : ObjectId("5bace34d6531b00d491b8cf1"),
+	"Name" : {
+		"Fname" : "Vilas",
+		"Lname" : "Rao"
+	},
+	"Designation" : "Programmer",
+	"Address" : [
+		{
+			"City" : "HADAPSAR",
+			"Pincode" : "411022"
+		}
+	]
+}
+
+--------------------------------------------------------------------------------------------------------
+
+8)Selects all documents in the employee collection where the value of the Designation is either "Developer" or "Tester".
+
+> db.Employee.find({$or:[{Designation:"Developer"},{Designation:"Tester"}]}).pretty()
+{
+	"_id" : ObjectId("5bac6ce4138aa944ccf0167c"),
+	"Empid" : 3,
+	"Name" : {
+		"Fname" : "Aniketh",
+		"Lname" : "Poojary"
+	},
+	"Company Name" : "Cognizant",
+	"Salary" : 45000,
+	"Designation" : "Tester",
+	"Age" : 30,
+	"Expertise" : [
+		"SDLC",
+		"JAVA",
+		"C++"
+	],
+	"DOB" : "17/06/1988",
+	"Email Id" : "pqr@gmail.com",
+	"Contact" : "9523452668",
+	"Address" : [
+		{
+			"City" : "NASHIK",
+			"Pincode" : "411028"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ce4138aa944ccf0167c"),
+	"Empid" : 6,
+	"Name" : {
+		"Fname" : "Ankit",
+		"Lname" : "Gupta"
+	},
+	"Company Name" : "TCS",
+	"Salary" : 45000,
+	"Designation" : "Developer",
+	"Age" : 30,
+	"Expertise" : [
+		"SDLC",
+		"JAVA",
+		"C++"
+	],
+	"DOB" : "17/06/1988",
+	"Email Id" : "pqr@gmail.com",
+	"Contact" : "9523452668",
+	"Address" : [
+		{
+			"City" : "NASHIK",
+			"Pincode" : "411028"
+		}
+	]
+}
+{
+	"_id" : ObjectId("5bac6ce4138aa944ccf0167c"),
+	"Empid" : 8,
+	"Name" : {
+		"Fname" : "Aditya",
+		"Lname" : "Naiknaware"
+	},
+	"Company Name" : "IBM",
+	"Salary" : 45000,
+	"Designation" : "Tester",
+	"Age" : 30,
+	"Expertise" : [
+		"SDLC",
+		"JAVA",
+		"C++"
+	],
+	"DOB" : "17/06/1988",
+	"Email Id" : "pqr@gmail.com",
+	"Contact" : "9523452668",
+	"Address" : [
+		{
+			"City" : "NASHIK",
+			"Pincode" : "411028"
+		}
+	]
+}
+
+
+--------------------------------------------------------------------------------------------------------
+
+9)Find all documents with Exact match on an Array having Expertise: ['MongoDB','Mysql','Cassandra']
+
+> db.Employee.aggregate([{$match:{Expertise:["MongoDB","MySQL","Cassandra"]}}])
+{
+	"_id" : ObjectId("5bac671f138aa944ccf0167a"),
+	"Empid" : 1,
+	"Name" : {
+		"Fname" : "Satyapriya",
+		"Lname" : "Raut"
+	},
+	"Company Name" : "TCS",
+	"Salary" : 37000,
+	"Designation" : "Programmer",
+	"Age" : 26,
+	"Expertise" : [
+		"MongoDB",
+		"MySQL",
+		"Cassandra"
+	],
+	"DOB" : "13/01/1998",
+	"Email Id" : "abc@gmail.com",
+	"Contact" : "9527152668",
+	"Address" : [
+		{
+			"City" : "PUNE",
+			"Pincode" : "411060"
+		}
+	]
+}
+
+-------------------------------------------------------------------------------------------------------
+
+10)Drop Single documents where designation="Developer".
+
+ db.Employee.remove({Designation:"Developer"})
+
+-------------------------------------------------------------------------------------------------------
+
