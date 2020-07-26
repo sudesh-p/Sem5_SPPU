@@ -1,0 +1,9 @@
+1.open terminal and run tk_server_chat.py by typing : python3 tk_server_chat.py
+2.if successfull you'll see the promt that server is started on some host and port , which we will use to connect clients with.
+
+3. open another terminal and run tk_client-chat.py by typing :python3 tk_client-chat.py
+4. A small window will appear named ChatBox, ignore it for now and type the server host and port in the terminal.
+5.after you enter the host and port number , switch to ChatBox and type your name as first argument, then u can stat to chat
+
+6. you can add upto 10 clients by using the steps 3-5 ,keeping the server running
+7. type:{quit}    to quit the chat

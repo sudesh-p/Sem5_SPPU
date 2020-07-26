@@ -1,0 +1,7 @@
+open 2 terminals
+in terminal 1:
+    run udpchatserver.py by typing: python3 udpchatserver.py
+in terminal 2:
+    run udpchatclient.py by typing: python3 udpchatclient.py
+
+send the messages one by one form each terminal to chat

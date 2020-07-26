@@ -1,0 +1,5 @@
+1.open 2 terminals in the same directory as programs
+2.on first terminal run server by typing : python3 server_tcp_p2p.py
+3.run client on second terminal as: python3 client_tcp_p2p.py
+4. enter the host and port on client terminal as shown on server terminal
+5.thats it.
